@@ -1,17 +1,13 @@
-# Battery Hybrid Digital Twin V15 — Fault-First Demo
+# Battery Hybrid Digital Twin V29
 
-## What changed
-- Cell 6 fault is active from the first frame; no 60-second wait.
-- The page automatically starts streaming when opened.
-- Removed the **Start Live Stream** button.
-- Only **Pause** and **Reset** remain.
-- Cell 6 is visually marked **FAULT** and its temperature, SOH and resistance are intentionally abnormal.
-- Fault severity ramps during the first 90 seconds.
+Blind-fault demonstration with separated HTML/CSS/JS.
 
-## Fault model
-Cell 6 is intentionally degraded with:
-- Internal resistance: ~1.55× nominal at t=0, ramping toward ~2×.
-- Effective SOH: ~88% at t=0, gradually reducing toward ~86%.
-- Additional I²R heating drives Cell 6 temperature above the surrounding cells.
+- C1, C2 and C12 are measured temperature sensors.
+- One hidden fault is randomly injected into C3-C11.
+- The DT is not told the fault location.
+- Healthy thermal field starts at 36.5 C and develops a modest spatial gradient.
+- Fault thermal footprint uses a 1-D thermal propagation signature to the three sparse sensors.
+- Sparse candidate scoring uses thermal-pattern fit + correlation + aggregate electrical evidence.
+- Debug log reports top candidate, runner-up, gap and estimated resistance increase every 10 s.
 
-This is an illustrative engineering demo, not a validated BMS or battery safety estimator.
+This is an illustrative engineering demo, not a validated BMS safety algorithm.

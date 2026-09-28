@@ -3,10 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Battery Hybrid Digital Twin — V15</title>
+<title>Battery Hybrid Digital Twin — V20</title>
 
 <link rel="stylesheet" href="styles.css">
 
+</head>
 <body>
 <div class="app">
 
@@ -16,7 +17,7 @@
       <h1>Battery Thermal & Cell Health Digital Twin</h1>
       <div class="sub">Measured signals are separated visually from reconstructed virtual cell states.</div>
     </div>
-    <div class="live" id="live">● LIVE — FAULT ACTIVE</div>
+    <div class="live" id="live">● LIVE — BLIND FAULT ESTIMATION</div>
   </header>
 
   <div class="toolbar">
@@ -54,8 +55,8 @@
         <h2>🔵 Digital Twin State</h2>
         <div class="sensorrow"><span>Hottest cell</span><b id="hot">—</b></div>
         <div class="sensorrow"><span>Pack SOH</span><b id="soh">—</b></div>
-        <div class="sensorrow"><span>Cell 6 SOH</span><b id="cell6soh">—</b></div>
-<div class="sensorrow"><span>Cell 6 SOC</span><b id="cell6soc">—</b></div>
+        <div class="sensorrow"><span id="detectedSohLabel">Detected Cell SOH</span><b id="detectedSoh">—</b></div>
+<div class="sensorrow"><span id="detectedSocLabel">Detected Cell SOC</span><b id="detectedSoc">—</b></div>
         <div class="sensorrow"><span>Estimated R</span><b id="res">—</b></div>
         <div class="sensorrow"><span>Thermal risk</span><b id="risk">—</b></div>
       </section>
@@ -101,44 +102,48 @@
         <section class="panel chart-panel">
           <div class="chart-title">All-Cell Temperature Trend</div>
           <div id="allTempChart" class="chart"></div>
-          <div class="chart-note">All 12 cells are shown together. Cell 6 is highlighted so the thermal divergence can be compared with the healthy cells.</div>
+          <div class="chart-note">All 12 cells are shown together. The currently detected hidden cell is highlighted so its thermal divergence can be compared with the healthy cells.</div>
         </section>
 
         <section class="panel chart-panel">
-          <div class="chart-title">Cell 6 Temperature vs Centre Sensor</div>
+          <div class="chart-title">Detected Cell Temperature vs Centre Sensor</div>
           <div id="tempChart" class="chart"></div>
-          <div class="chart-note">Centre sensor T2 is measured; Cell 6 temperature is a Digital Twin estimate.</div>
+          <div class="chart-note">Centre sensor T2 is measured; the detected hidden-cell temperature is a Digital Twin estimate.</div>
         </section>
 
         <section class="panel chart-panel">
           <div class="chart-title">All-Cell SOH</div>
           <div id="healthChart" class="chart"></div>
-          <div class="chart-note">Cell 6 degradation is visible as the outlier in estimated state of health.</div>
+          <div class="chart-note">The DT-highlighted candidate is shown as the current model-based outlier.</div>
         </section>
 
         <section class="panel chart-panel">
           <div class="chart-title">All-Cell Resistance</div>
           <div id="resistanceChart" class="chart"></div>
-          <div class="chart-note">Estimated internal resistance. Cell 6 rises above the healthy-cell population.</div>
+          <div class="chart-note">Estimated internal resistance. The DT-highlighted candidate is compared with the healthy-cell population.</div>
         </section>
 
         <section class="panel chart-panel">
           <div class="chart-title">All-Cell SOC</div>
           <div id="cellSocChart" class="chart"></div>
-          <div class="chart-note">Cell SOC is reconstructed from pack current and individual effective capacity.</div>
+          <div class="chart-note">Cell SOC is reconstructed from pack current and inferred cell capacity.</div>
         </section>
 
         <section class="panel chart-panel">
-          <div class="chart-title">Pack SOC vs Cell 6 SOC</div>
+          <div class="chart-title">Pack SOC vs Detected Cell SOC</div>
           <div id="socChart" class="chart"></div>
-          <div class="chart-note">Pack SOC is the BMS input; Cell 6 SOC is reconstructed by the Digital Twin.</div>
+          <div class="chart-note">Pack SOC is the BMS input; Detected Cell SOC is reconstructed by the Digital Twin.</div>
         </section>
 
       </div>
 
       <section class="panel">
         <h2>Hybrid Twin Inference</h2>
-        <div class="note" id="explain">Waiting for sensor stream…</div>
+        <div class="note" id="explain">Starting blind-fault simulation…</div>
+<div class="debug-panel">
+  <div class="debug-title">Simulation Debug Log</div>
+  <pre id="debugLog">Starting…</pre>
+</div>
 <div id="healthSummary" style="margin-top:10px"></div>
       </section>
 

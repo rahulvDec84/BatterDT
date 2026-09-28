@@ -97,3 +97,7 @@ h2{font-size:16px;margin:0 0 11px}
   .battery{grid-template-columns:repeat(2,minmax(0,1fr))}
   .mode-banner{align-items:flex-start;flex-direction:column}
 }
+
+.debug-panel{margin-top:12px;border:1px solid #cbd5e1;border-radius:12px;background:#0f172a;color:#dbeafe;padding:12px;}
+.debug-title{font-weight:800;font-size:13px;margin-bottom:6px;color:#93c5fd;}
+.debug-panel pre{margin:0;white-space:pre-wrap;font:11px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace;max-height:190px;overflow:auto;}
