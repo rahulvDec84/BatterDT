@@ -1,4 +1,4 @@
-const measuredCells=[0,5,11];
+const measuredCells=[0,1,11];
 const NOMINAL_AH=60;
 let data=[];
 let idx=0,timer=null,running=false;
@@ -48,7 +48,7 @@ function model(r){
   }
 
   // Fault is active from the first frame so the demo opens directly in the
-  // abnormal state. Cell 6 is deliberately degraded: resistance increases
+  // abnormal state. Cell 6 is deliberately degraded and remains unmeasured: resistance increases
   // and its temperature is driven upward by the additional I²R loss.
   const faultProgress=clamp(r.time_s/90,0,1);
   const faultRFactor=1.55 + 0.45*faultProgress; // 1.55x -> 2.0x nominal
@@ -272,7 +272,7 @@ $("cell6soc").textContent=cellSOC[5].toFixed(1)+"%";
   $("res").textContent=m.resistance.toFixed(1)+" mΩ";
   const risk=m.temps[5]>45?"HIGH":m.temps[5]>40?"WATCH":"NORMAL";
   $("risk").textContent=risk;$("risk").style.color=risk==="HIGH"?"#ef4444":risk==="WATCH"?"#f59e0b":"#16a66a";
-  $("explain").innerHTML=`At <b>t=${r.time_s}s</b>, the pack is <b>${mode.name}</b>. The demo starts with a deliberate <b>Cell 6 fault</b>. The DT represents the fault as increased internal resistance (<b>${(12*m.faultRFactor).toFixed(1)} mΩ</b>) and reduced effective SOH (<b>${m.cellSOH[5].toFixed(1)}%</b>), which increases I²R heating. Cell 6 is now <b>${m.temps[5].toFixed(1)}°C</b>, while the other cells remain near the normal thermal field. Pack SOC remains the BMS input; cell SOC is reconstructed by coulomb counting. Coolant thermal residual = <b>${m.residual.toFixed(2)}°C</b>.`;
+  $("explain").innerHTML=`At <b>t=${r.time_s}s</b>, the pack is <b>${mode.name}</b>. The demo contains a hidden degradation in <b>Cell 6</b>; Cell 6 is not directly measured by any temperature sensor. The DT represents the fault as increased internal resistance (<b>${(12*m.faultRFactor).toFixed(1)} mΩ</b>) and reduced effective SOH (<b>${m.cellSOH[5].toFixed(1)}%</b>), which increases I²R heating. The DT estimates Cell 6 at <b>${m.temps[5].toFixed(1)}°C</b>, while the other cells remain near the normal thermal field. Pack SOC remains the BMS input; cell SOC is reconstructed by coulomb counting. Coolant thermal residual = <b>${m.residual.toFixed(2)}°C</b>.`;
 
   drawAllTempChart();
   drawTempChart();
