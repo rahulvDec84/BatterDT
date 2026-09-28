@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Battery Hybrid Digital Twin — V15</title>
+
+<link rel="stylesheet" href="styles.css">
+
+<body>
+<div class="app">
+
+  <header class="top">
+    <div class="brand">
+      <div class="eyebrow">HYBRID DIGITAL TWIN • BATTERY THERMAL + HEALTH INTELLIGENCE</div>
+      <h1>Battery Thermal & Cell Health Digital Twin</h1>
+      <div class="sub">Measured signals are separated visually from reconstructed virtual cell states.</div>
+    </div>
+    <div class="live" id="live">● LIVE — FAULT ACTIVE</div>
+  </header>
+
+  <div class="toolbar">
+    <button id="pause" class="secondary">Ⅱ Pause</button>
+    <button id="reset" class="secondary">↻ Reset</button>
+    <label class="file-label">Load CSV/JSON:
+      <input id="file" type="file" accept=".csv,.json">
+    </label>
+  </div>
+
+  <section class="mode-banner">
+    <div class="mode-left">
+      <div class="mode-dot" id="modeDot"></div>
+      <div>
+        <div class="mode-title" id="operatingMode">DISCHARGING</div>
+        <div class="mode-sub" id="modeReason">Starting at high discharge load</div>
+      </div>
+    </div>
+    <div class="legend">
+      <span><i class="swatch meas"></i>Measured sensor</span>
+      <span><i class="swatch dt"></i>Digital Twin output</span>
+    </div>
+  </section>
+
+  <div class="layout">
+
+    <aside class="sidebar">
+
+      <section class="panel measured-panel">
+        <h2>🟢 Measured Sensors</h2>
+        <div id="sensors"></div>
+      </section>
+
+      <section class="panel dt-panel">
+        <h2>🔵 Digital Twin State</h2>
+        <div class="sensorrow"><span>Hottest cell</span><b id="hot">—</b></div>
+        <div class="sensorrow"><span>Pack SOH</span><b id="soh">—</b></div>
+        <div class="sensorrow"><span>Cell 6 SOH</span><b id="cell6soh">—</b></div>
+<div class="sensorrow"><span>Cell 6 SOC</span><b id="cell6soc">—</b></div>
+        <div class="sensorrow"><span>Estimated R</span><b id="res">—</b></div>
+        <div class="sensorrow"><span>Thermal risk</span><b id="risk">—</b></div>
+      </section>
+
+      <section class="panel">
+        <h2>Operating Cycle</h2>
+        <div class="kpi-row">
+          <div class="kpi"><small>Discharge rate</small><b id="drate">—</b></div>
+          <div class="kpi"><small>Charge rate</small><b id="crate">—</b></div>
+          <div class="kpi"><small>Cycle state</small><b id="cycle">—</b></div>
+        </div>
+        <div class="note" style="margin-top:10px">
+          Current convention: <b>+</b> = discharge, <b>−</b> = charge.
+          Nominal capacity: <b>60 Ah</b>.
+        </div>
+      </section>
+
+    </aside>
+
+    <main class="content">
+
+      <section class="metrics">
+        <div class="metric"><small>PACK CURRENT</small><b id="current">—</b></div>
+        <div class="metric"><small>PACK VOLTAGE</small><b id="voltage">—</b></div>
+        <div class="metric"><small>SOC</small><b id="soc">—</b></div>
+        <div class="metric"><small>COOLANT TOUT</small><b id="tout">—</b></div>
+        <div class="metric mode" id="modeMetric"><small>OPERATING MODE</small><b id="modeValue">—</b></div>
+        <div class="metric rate"><small>DISCHARGE RATE</small><b id="rateValue">—</b></div>
+      </section>
+
+      <section class="panel">
+        <div class="battery-head">
+          <div>
+            <h2 style="margin-bottom:4px">12-Cell Virtual Battery</h2>
+            <div class="small">Green = physical temperature sensor • Blue = Digital Twin estimate</div>
+          </div>
+        </div>
+        <div id="battery" class="battery"></div>
+      </section>
+
+      <div class="charts">
+
+        <section class="panel chart-panel">
+          <div class="chart-title">All-Cell Temperature Trend</div>
+          <div id="allTempChart" class="chart"></div>
+          <div class="chart-note">All 12 cells are shown together. Cell 6 is highlighted so the thermal divergence can be compared with the healthy cells.</div>
+        </section>
+
+        <section class="panel chart-panel">
+          <div class="chart-title">Cell 6 Temperature vs Centre Sensor</div>
+          <div id="tempChart" class="chart"></div>
+          <div class="chart-note">Centre sensor T2 is measured; Cell 6 temperature is a Digital Twin estimate.</div>
+        </section>
+
+        <section class="panel chart-panel">
+          <div class="chart-title">All-Cell SOH</div>
+          <div id="healthChart" class="chart"></div>
+          <div class="chart-note">Cell 6 degradation is visible as the outlier in estimated state of health.</div>
+        </section>
+
+        <section class="panel chart-panel">
+          <div class="chart-title">All-Cell Resistance</div>
+          <div id="resistanceChart" class="chart"></div>
+          <div class="chart-note">Estimated internal resistance. Cell 6 rises above the healthy-cell population.</div>
+        </section>
+
+        <section class="panel chart-panel">
+          <div class="chart-title">All-Cell SOC</div>
+          <div id="cellSocChart" class="chart"></div>
+          <div class="chart-note">Cell SOC is reconstructed from pack current and individual effective capacity.</div>
+        </section>
+
+        <section class="panel chart-panel">
+          <div class="chart-title">Pack SOC vs Cell 6 SOC</div>
+          <div id="socChart" class="chart"></div>
+          <div class="chart-note">Pack SOC is the BMS input; Cell 6 SOC is reconstructed by the Digital Twin.</div>
+        </section>
+
+      </div>
+
+      <section class="panel">
+        <h2>Hybrid Twin Inference</h2>
+        <div class="note" id="explain">Waiting for sensor stream…</div>
+<div id="healthSummary" style="margin-top:10px"></div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
